@@ -2,40 +2,64 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ranking - Quem é Quem?</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+
 body{
 margin:0;
 font-family:'Poppins',sans-serif;
 background: linear-gradient(135deg,#1e3c72,#8e2de2);
 color:white;
+-webkit-text-size-adjust:100%;
 }
 
 .container{
-max-width:800px;
+max-width:900px;
 margin:auto;
 padding:20px;
 }
 
-h1{text-align:center;}
+h1{
+text-align:center;
+font-size:clamp(1.8rem,3vw,2.4rem);
+margin-bottom:20px;
+}
+
+/* ===== SELECT ===== */
 
 select{
 width:100%;
-padding:12px;
-border-radius:10px;
-margin-bottom:15px;
+padding:16px;
+border-radius:12px;
+margin-bottom:20px;
+font-size:16px;
+border:none;
+box-sizing:border-box;
 }
+
+/* ===== CARDS ===== */
 
 .card{
 background:white;
-color:black;
+color:#333;
 border-radius:15px;
-padding:12px;
-margin-bottom:10px;
+padding:16px;
+margin-bottom:14px;
 box-shadow:0 8px 20px rgba(0,0,0,0.2);
-animation:fadeIn 0.5s ease;
+animation:fadeIn 0.4s ease;
+font-size:1rem;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.card span{
+font-weight:600;
 }
 
 @keyframes fadeIn{
@@ -43,19 +67,73 @@ from{opacity:0; transform:translateY(10px);}
 to{opacity:1; transform:translateY(0);}
 }
 
-.top1{background:gold;}
-.top2{background:silver;}
-.top3{background:#cd7f32; color:white;}
+/* ===== TOP 3 DESTACADOS ===== */
+
+.top1{
+background:linear-gradient(45deg,#FFD700,#FFC107);
+font-weight:700;
+font-size:1.1rem;
+}
+
+.top2{
+background:linear-gradient(45deg,#C0C0C0,#B0BEC5);
+font-weight:600;
+}
+
+.top3{
+background:linear-gradient(45deg,#cd7f32,#a97142);
+color:white;
+font-weight:600;
+}
+
+/* ===== BOTÃO ===== */
 
 button{
 background:linear-gradient(45deg,#8e2de2,#4a00e0);
 color:white;
-padding:12px;
+padding:16px;
 border:none;
-border-radius:10px;
+border-radius:14px;
 width:100%;
 cursor:pointer;
+font-size:1rem;
+font-weight:600;
+transition:0.3s;
 }
+
+button:hover{
+transform:scale(1.03);
+box-shadow:0 0 15px rgba(142,45,226,0.6);
+}
+
+button:active{
+transform:scale(0.98);
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width:480px){
+
+.container{
+padding:14px;
+}
+
+.card{
+font-size:0.95rem;
+padding:14px;
+}
+
+select{
+padding:18px;
+}
+
+button{
+padding:18px;
+font-size:1.05rem;
+}
+
+}
+
 </style>
 </head>
 
@@ -63,7 +141,7 @@ cursor:pointer;
 
 <div class="container">
 
-<h1>Ranking</h1>
+<h1>🏆 Ranking</h1>
 
 <select id="filtro" onchange="render()">
 <option value="GERAL">Ranking Geral</option>
@@ -106,6 +184,9 @@ if(filtro!=="GERAL"){
 lista=dados.filter(d=>d.turma===filtro);
 }
 
+/* Ordena por pontuação (maior primeiro) */
+lista.sort((a,b)=>b.pontuacao-a.pontuacao);
+
 lista.slice(0,exibindo).forEach((d,i)=>{
 
 let classe="";
@@ -115,7 +196,8 @@ if(i===2) classe="top3";
 
 div.innerHTML+=`
 <div class="card ${classe}">
-${i+1}º - ${d.nome} (${d.turma}) - ${d.pontuacao} pts
+<div>${i+1}º - <span>${d.nome}</span></div>
+<div>${d.turma} • ${d.pontuacao} pts</div>
 </div>`;
 });
 }

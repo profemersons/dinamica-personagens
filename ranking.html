@@ -2,157 +2,225 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Ranking - Quem é Quem?</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking - Quem é Quem?</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #004A8D, #1e3c72);
-            color: white;
-            text-align: center;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
+<style>
 
-        h1 {
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background: linear-gradient(135deg,#004A8D,#1e3c72);
+color:white;
+text-align:center;
+-webkit-text-size-adjust:100%;
+}
 
-        .intro {
-            color: #F7941D;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
 
-        select {
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 15px;
-            margin-bottom: 20px;
-            border: none;
-        }
+h1{
+font-size:clamp(1.8rem,3vw,2.4rem);
+font-weight:700;
+margin-bottom:10px;
+}
 
-        .card-ranking {
-            background: white;
-            color: #004A8D;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 8px 20px rgba(0, 74, 141, 0.25);
-            animation: fadeIn 0.6s ease;
-        }
+.intro{
+color:#F7941D;
+font-size:clamp(1rem,2vw,1.2rem);
+margin-bottom:25px;
+line-height:1.5;
+}
 
-        .top1 {
-            background: #FFD700;
-            color: #004A8D;
-        }
+/* SELECT */
 
-        .top2 {
-            background: #C0C0C0;
-            color: #004A8D;
-        }
+select{
+width:100%;
+max-width:400px;
+padding:16px;
+border-radius:12px;
+font-size:16px;
+margin-bottom:25px;
+border:none;
+box-sizing:border-box;
+}
 
-        .top3 {
-            background: #CD7F32;
-            color: #004A8D;
-        }
+/* CARDS */
 
-        button {
-            background: #F7941D;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
+.card-ranking{
+background:white;
+color:#004A8D;
+border-radius:15px;
+padding:16px;
+margin-bottom:14px;
+box-shadow:0 8px 20px rgba(0,74,141,0.25);
+animation:fadeIn 0.4s ease;
+font-size:1rem;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+}
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(247, 148, 30, 0.6);
-        }
+.card-ranking strong{
+font-weight:700;
+}
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+.top1{
+background:linear-gradient(45deg,#FFD700,#FFC107);
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+.top2{
+background:linear-gradient(45deg,#C0C0C0,#B0BEC5);
+}
+
+.top3{
+background:linear-gradient(45deg,#CD7F32,#A97142);
+color:white;
+}
+
+/* BOTÃO */
+
+button{
+background:#F7941D;
+color:white;
+padding:16px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+font-weight:600;
+font-size:1rem;
+width:100%;
+max-width:400px;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.03);
+box-shadow:0 0 15px rgba(247,148,30,0.6);
+}
+
+button:active{
+transform:scale(0.98);
+}
+
+/* MOBILE */
+
+@media (max-width:480px){
+
+.container{
+padding:14px;
+}
+
+.card-ranking{
+font-size:0.95rem;
+padding:14px;
+}
+
+select{
+padding:18px;
+}
+
+button{
+padding:18px;
+font-size:1.05rem;
+}
+
+}
+
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(15px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+</style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Ranking - Quem é Quem?</h1>
-        <p class="intro">Confira como sua turma se saiu! Selecione a turma ou veja o ranking geral.</p>
+<div class="container">
 
-        <select id="filtro" onchange="renderRanking()">
-            <option value="GERAL">Ranking Geral</option>
-            <option value="INFO12">INFO12</option>
-            <option value="ADM6">ADM6</option>
-            <option value="ADM5">ADM5</option>
-            <option value="MULTI5">MULTI5</option>
-            <option value="ADM4">ADM4</option>
-            <option value="MULTI4">MULTI4</option>
-        </select>
+<h1>🏆 Ranking - Quem é Quem?</h1>
+<p class="intro">Confira como sua turma se saiu! Selecione a turma ou veja o ranking geral.</p>
 
-        <div id="ranking"></div>
-        <button onclick="mostrarMais()">Carregar mais</button>
-    </div>
+<select id="filtro" onchange="renderRanking()">
+<option value="GERAL">Ranking Geral</option>
+<option value="INFO12">INFO12</option>
+<option value="ADM6">ADM6</option>
+<option value="ADM5">ADM5</option>
+<option value="MULTI5">MULTI5</option>
+<option value="ADM4">ADM4</option>
+<option value="MULTI4">MULTI4</option>
+</select>
 
-    <script>
-        const API = "https://script.google.com/macros/s/AKfycbyJBkb0iJ4zY6IlxVtIgInvkImYhz8Xa948A6Ny2TlC6emiNY_4yq16cvdUr-dAk3YZPA/exec";
-        let respostas = [];
-        let limite = 10;
-        let filtro = "GERAL";
+<div id="ranking"></div>
 
-        async function carregarDados() {
-            const res = await fetch(API + "?action=getRanking");
-            respostas = await res.json();
-            renderRanking();
-        }
+<button onclick="mostrarMais()">Carregar mais</button>
 
-        function renderRanking() {
-            filtro = document.getElementById("filtro").value;
-            const rankingDiv = document.getElementById("ranking");
-            rankingDiv.innerHTML = "";
-            let dadosFiltrados = respostas.filter(a => filtro === "GERAL" || a.turma === filtro);
-            dadosFiltrados.slice(0, limite).forEach((r, i) => {
-                const card = document.createElement("div");
-                card.className = "card-ranking";
-                if (i === 0) card.classList.add("top1");
-                if (i === 1) card.classList.add("top2");
-                if (i === 2) card.classList.add("top3");
-                const pts = r.pontuacao !== undefined ? r.pontuacao : 0;
-                card.innerHTML = `<strong>${i + 1}. ${r.nome}</strong> - ${r.turma} - ${pts} pts`;
+</div>
 
-                rankingDiv.appendChild(card);
-            });
-        }
+<script>
 
-        function mostrarMais() {
-            limite += 10;
-            renderRanking();
-        }
+const API = "https://script.google.com/macros/s/AKfycbyJBkb0iJ4zY6IlxVtIgInvkImYhz8Xa948A6Ny2TlC6emiNY_4yq16cvdUr-dAk3YZPA/exec";
 
-        carregarDados();
-    </script>
+let respostas = [];
+let limite = 10;
+
+async function carregarDados(){
+const res = await fetch(API + "?action=getRanking");
+respostas = await res.json();
+
+/* Ordena por pontuação (maior primeiro) */
+respostas.sort((a,b)=>(b.pontuacao||0)-(a.pontuacao||0));
+
+renderRanking();
+}
+
+function renderRanking(){
+
+const filtro = document.getElementById("filtro").value;
+const rankingDiv = document.getElementById("ranking");
+rankingDiv.innerHTML = "";
+
+let dadosFiltrados = respostas.filter(a => 
+filtro === "GERAL" || a.turma === filtro
+);
+
+dadosFiltrados.slice(0, limite).forEach((r, i) => {
+
+const card = document.createElement("div");
+card.className = "card-ranking";
+
+if(i===0) card.classList.add("top1");
+if(i===1) card.classList.add("top2");
+if(i===2) card.classList.add("top3");
+
+const pts = r.pontuacao || 0;
+
+card.innerHTML = `
+<div><strong>${i+1}º - ${r.nome}</strong></div>
+<div>${r.turma} • ${pts} pts</div>
+`;
+
+rankingDiv.appendChild(card);
+
+});
+
+}
+
+function mostrarMais(){
+limite += 10;
+renderRanking();
+}
+
+carregarDados();
+
+</script>
+
 </body>
-
 </html>
