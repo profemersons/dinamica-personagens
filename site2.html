@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ranking - Quem é Quem?</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background: linear-gradient(135deg,#1e3c72,#8e2de2);
+color:white;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+padding:20px;
+}
+
+h1{text-align:center;}
+
+select{
+width:100%;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.card{
+background:white;
+color:black;
+border-radius:15px;
+padding:12px;
+margin-bottom:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+.top1{background:gold;}
+.top2{background:silver;}
+.top3{background:#cd7f32; color:white;}
+
+button{
+background:linear-gradient(45deg,#8e2de2,#4a00e0);
+color:white;
+padding:12px;
+border:none;
+border-radius:10px;
+width:100%;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Ranking</h1>
+
+<select id="filtro" onchange="render()">
+<option value="GERAL">Ranking Geral</option>
+<option value="INFO12">INFO12</option>
+<option value="ADM6">ADM6</option>
+<option value="ADM5">ADM5</option>
+<option value="MULTI5">MULTI5</option>
+<option value="ADM4">ADM4</option>
+<option value="MULTI4">MULTI4</option>
+</select>
+
+<div id="ranking"></div>
+
+<button onclick="mostrarMais()">Carregar mais</button>
+
+</div>
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbyJBkb0iJ4zY6IlxVtIgInvkImYhz8Xa948A6Ny2TlC6emiNY_4yq16cvdUr-dAk3YZPA/exec";
+
+let dados=[];
+let exibindo=10;
+
+async function carregar(){
+const res=await fetch(API+"?action=getRanking");
+dados=await res.json();
+render();
+}
+
+function render(){
+
+const filtro=document.getElementById("filtro").value;
+const div=document.getElementById("ranking");
+div.innerHTML="";
+
+let lista=dados;
+
+if(filtro!=="GERAL"){
+lista=dados.filter(d=>d.turma===filtro);
+}
+
+lista.slice(0,exibindo).forEach((d,i)=>{
+
+let classe="";
+if(i===0) classe="top1";
+if(i===1) classe="top2";
+if(i===2) classe="top3";
+
+div.innerHTML+=`
+<div class="card ${classe}">
+${i+1}º - ${d.nome} (${d.turma}) - ${d.pontuacao} pts
+</div>`;
+});
+}
+
+function mostrarMais(){
+exibindo+=10;
+render();
+}
+
+carregar();
+
+</script>
+
+</body>
+</html>
