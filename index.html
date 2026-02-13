@@ -239,6 +239,12 @@ function renderQuiz(){
   document.getElementById("loading").style.display="none";
   const quiz = document.getElementById("quiz");
   quiz.innerHTML="";
+
+  // 🔥 Cria lista ordenada alfabeticamente
+  const professoresOrdenados = [...professores]
+    .map(p => p.professor)
+    .sort((a,b)=>a.localeCompare(b,'pt-BR'));
+
   professores.forEach((p,index)=>{
     const card = document.createElement("div");
     card.className="card card-personagem";
@@ -248,14 +254,16 @@ function renderQuiz(){
       <p>${p.origem}</p>
       <select data-index="${index}">
         <option value="">Escolha o professor</option>
-        ${professores.map(pr=>`<option value="${pr.professor}">${pr.professor}</option>`).join("")}
+        ${professoresOrdenados.map(nome=>`<option value="${nome}">${nome}</option>`).join("")}
       </select>`;
     quiz.appendChild(card);
   });
+
   selects = document.querySelectorAll("select[data-index]");
   selects.forEach(sel=>sel.addEventListener("change", atualizarOpcoes));
   document.getElementById("enviarBtn").style.display="block";
 }
+
 
 function atualizarOpcoes(){
   respostas = Array.from(selects).map(s=>s.value);
