@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Revelação Oficial - Quem é Quem?</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg,#004A8D,#1e3c72);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  text-align:center;
+  overflow:hidden;
+}
+.slide{
+  max-width:900px;
+  animation:fade 0.6s ease;
+}
+@keyframes fade{from{opacity:0; transform:scale(0.9);} to{opacity:1; transform:scale(1);}}
+button{
+  margin-top:40px;
+  padding:15px 40px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  background:#F7941D;
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(247,148,30,0.6);
+}
+.bar{
+  height:30px;
+  background:white;
+  margin:10px 0;
+  border-radius:8px;
+  color:#004A8D;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  padding-left:10px;
+  transition:width 1s ease;
+}
+</style>
+</head>
+
+<body>
+<div class="slide" id="slide"></div>
+
+<script>
+const API="https://script.google.com/macros/s/AKfycbyF9o93ttt2KwS-QmIQ24MvqqkyMJ9iAyaFTlpDrXH_YTRJtLfD_d-tU67LMHSU6JLR/exec";
+let etapa=0;
+let dados;
+
+async function iniciar(){
+  const res=await fetch(API+"?action=getStats");
+  dados=await res.json();
+  mostrar();
+}
+
+function mostrar(){
+  const slide=document.getElementById("slide");
+
+  if(!dados){slide.innerHTML="<h2>Erro ao carregar estatísticas</h2>"; return;}
+
+  if(etapa===0){
+    slide.innerHTML=`
+    <h1>Quem é Quem?</h1>
+    <h2>Total de Participantes: ${dados.totalAlunos}</h2>
+    <p style="color:#F7941D;">Prepare-se para a grande revelação dos personagens e professores!</p>
+    <button onclick="proximo()">Começar</button>`;
+  }
+
+  if(etapa===1){
+    let melhor="",maior=0;
+    for(let t in dados.turmaMedia){
+      let media=dados.turmaMedia[t].total/dados.turmaMedia[t].alunos;
+      if(media>maior){maior=media; melhor=t;}
+    }
+    slide.innerHTML=`
+    <h1>Turma Campeã 🏆</h1>
+    <h2>${melhor}</h2>
+    <p>Média: ${maior.toFixed(1)} pts</p>
+    <button onclick="proximo()">Próximo</button>`;
+  }
+
+  if(etapa===2){
+    let menorProf="",menorPerc=100;
+    for(let p in dados.stats){
+      if(!dados.stats[p]) continue;
+      let perc=(dados.stats[p].acertos/dados.totalAlunos)*100;
+      if(perc<menorPerc){menorPerc=perc; menorProf=p;}
+    }
+    slide.innerHTML=`
+    <h1>Professor Mais Misterioso 🕵️</h1>
+    <h2>${menorProf}</h2>
+    <p>Apenas ${menorPerc.toFixed(1)}% acertaram</p>
+    <button onclick="proximo()">Próximo</button>`;
+  }
+
+  if(etapa===3){
+    let maiorProf="",maiorPerc=0;
+    for(let p in dados.stats){
+      if(!dados.stats[p]) continue;
+      let perc=(dados.stats[p].acertos/dados.totalAlunos)*100;
+      if(perc>maiorPerc){maiorPerc=perc; maiorProf=p;}
+    }
+    slide.innerHTML=`
+    <h1>Professor Mais Óbvio 😎</h1>
+    <h2>${maiorProf}</h2>
+    <p>${maiorPerc.toFixed(1)}% acertaram</p>
+    <button onclick="proximo()">Final</button>`;
+  }
+
+  if(etapa>3){
+    slide.innerHTML="<h1>🎉 Revelação Completa!</h1><p>Obrigado por participar! Agora veja o ranking completo no Site 2.</p>";
+  }
+}
+
+function proximo(){etapa++; mostrar();}
+iniciar();
+</script>
+</body>
+</html>

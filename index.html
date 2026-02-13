@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quem é Quem?</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg,#004A8D,#1e3c72);
+  color:#fff;
+  animation: bgMove 8s infinite alternate;
+}
+@keyframes bgMove{from{background-position:left;} to{background-position:right;}}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  font-weight:700;
+  font-size:2.2em;
+  color:white;
+}
+
+.intro{
+  text-align:center;
+  color:#F7941D;
+  font-size:1.1em;
+  margin-bottom:20px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 12px 30px rgba(0,74,141,0.25);
+  animation: fadeIn 0.6s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover{
+  transform: translateY(-5px);
+  box-shadow:0 12px 30px rgba(0,74,141,0.35);
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+input, select{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:15px;
+}
+
+button{
+  background:#F7941D;
+  color:white;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+  width:100%;
+  transition:0.3s;
+}
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(247,148,30,0.6);
+}
+
+img{
+  width:100%;
+  border-radius:15px;
+}
+
+.loading{
+  text-align:center;
+  font-size:20px;
+  color:white;
+  margin-top:40px;
+}
+.card-personagem h3,
+.card-personagem p {
+    color: #004A8D; /* azul escuro para contraste com fundo branco */
+    margin: 5px 0;
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>Quem é Quem?</h1>
+<p class="intro">Bem-vindo! 😎 Digite seu nome (coloque um emoji se quiser) e escolha sua turma antes de começar a adivinhar os personagens que nossos professores escolheram!</p>
+
+<div id="inicio" class="card">
+  <input id="nome" placeholder="Digite seu nome (emoji permitido!)">
+  <select id="turma">
+    <option value="">Selecione sua turma</option>
+    <option value="INFO12">INFO12</option>
+    <option value="ADM6">ADM6</option>
+    <option value="ADM5">ADM5</option>
+    <option value="MULTI5">MULTI5</option>
+    <option value="ADM4">ADM4</option>
+    <option value="MULTI4">MULTI4</option>
+  </select>
+  <button onclick="iniciar()">Começar</button>
+</div>
+
+<div id="loading" class="loading" style="display:none;">Carregando personagens… prepare sua intuição! 🔍</div>
+<div id="quiz"></div>
+<button id="enviarBtn" onclick="enviar()" style="display:none;">Enviar Respostas</button>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbyJBkb0iJ4zY6IlxVtIgInvkImYhz8Xa948A6Ny2TlC6emiNY_4yq16cvdUr-dAk3YZPA/exec";
+let professores = [];
+let respostas = [];
+let selects = [];
+
+function alerta(msg){
+  const div = document.createElement("div");
+  div.innerText = msg;
+  div.style.position="fixed";
+  div.style.top="20px";
+  div.style.left="50%";
+  div.style.transform="translateX(-50%)";
+  div.style.background="#F7941D";
+  div.style.color="white";
+  div.style.padding="12px 24px";
+  div.style.borderRadius="12px";
+  div.style.boxShadow="0 4px 10px rgba(0,0,0,0.2)";
+  div.style.zIndex="1000";
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),3000);
+}
+
+async function iniciar(){
+  const nome = document.getElementById("nome").value.trim();
+  const turma = document.getElementById("turma").value;
+  if(!nome || !turma){ alerta("Preencha nome e turma!"); return; }
+
+  document.getElementById("inicio").style.display="none";
+  document.getElementById("loading").style.display="block";
+
+  const res = await fetch(API + "?action=getData");
+  const data = await res.json();
+  professores = data.professores;
+  respostas = new Array(professores.length);
+  renderQuiz();
+}
+
+function renderQuiz(){
+  document.getElementById("loading").style.display="none";
+  const quiz = document.getElementById("quiz");
+  quiz.innerHTML="";
+  professores.forEach((p,index)=>{
+    const card = document.createElement("div");
+    card.className="card card-personagem";
+    card.innerHTML=`
+      <img src="${p.imagem}">
+      <h3>${p.personagem}</h3>
+      <p>${p.origem}</p>
+      <select data-index="${index}">
+        <option value="">Escolha o professor</option>
+        ${professores.map(pr=>`<option value="${pr.professor}">${pr.professor}</option>`).join("")}
+      </select>`;
+    quiz.appendChild(card);
+  });
+  selects = document.querySelectorAll("select[data-index]");
+  selects.forEach(sel=>sel.addEventListener("change", atualizarOpcoes));
+  document.getElementById("enviarBtn").style.display="block";
+}
+
+function atualizarOpcoes(){
+  respostas = Array.from(selects).map(s=>s.value);
+  selects.forEach((selectAtual,i)=>{
+    const valorAtual = selectAtual.value;
+    Array.from(selectAtual.options).forEach(opt=>{
+      if(opt.value==="") return;
+      opt.disabled = respostas.includes(opt.value) && opt.value!==valorAtual;
+    });
+  });
+}
+
+async function enviar(){
+  if(respostas.includes("") || respostas.includes(undefined)){ alerta("Responda todos os personagens!"); return; }
+  await fetch(API,{method:"POST",body:JSON.stringify({
+    nome:document.getElementById("nome").value.trim(),
+    turma:document.getElementById("turma").value,
+    respostas:respostas
+  })});
+  document.body.innerHTML=`
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#004A8D,#1e3c72);color:white;text-align:center;">
+      <h2>🎉 Respostas enviadas!<br>Aguarde a revelação!</h2>
+    </div>`;
+}
+</script>
+</body>
+</html>

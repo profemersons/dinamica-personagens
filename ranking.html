@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking - Quem é Quem?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #004A8D, #1e3c72);
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .intro {
+            color: #F7941D;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .card-ranking {
+            background: white;
+            color: #004A8D;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 20px rgba(0, 74, 141, 0.25);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .top1 {
+            background: #FFD700;
+            color: #004A8D;
+        }
+
+        .top2 {
+            background: #C0C0C0;
+            color: #004A8D;
+        }
+
+        .top3 {
+            background: #CD7F32;
+            color: #004A8D;
+        }
+
+        button {
+            background: #F7941D;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(247, 148, 30, 0.6);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ranking - Quem é Quem?</h1>
+        <p class="intro">Confira como sua turma se saiu! Selecione a turma ou veja o ranking geral.</p>
+
+        <select id="filtro" onchange="renderRanking()">
+            <option value="GERAL">Ranking Geral</option>
+            <option value="INFO12">INFO12</option>
+            <option value="ADM6">ADM6</option>
+            <option value="ADM5">ADM5</option>
+            <option value="MULTI5">MULTI5</option>
+            <option value="ADM4">ADM4</option>
+            <option value="MULTI4">MULTI4</option>
+        </select>
+
+        <div id="ranking"></div>
+        <button onclick="mostrarMais()">Carregar mais</button>
+    </div>
+
+    <script>
+        const API = "https://script.google.com/macros/s/AKfycbyJBkb0iJ4zY6IlxVtIgInvkImYhz8Xa948A6Ny2TlC6emiNY_4yq16cvdUr-dAk3YZPA/exec";
+        let respostas = [];
+        let limite = 10;
+        let filtro = "GERAL";
+
+        async function carregarDados() {
+            const res = await fetch(API + "?action=getRanking");
+            respostas = await res.json();
+            renderRanking();
+        }
+
+        function renderRanking() {
+            filtro = document.getElementById("filtro").value;
+            const rankingDiv = document.getElementById("ranking");
+            rankingDiv.innerHTML = "";
+            let dadosFiltrados = respostas.filter(a => filtro === "GERAL" || a.turma === filtro);
+            dadosFiltrados.slice(0, limite).forEach((r, i) => {
+                const card = document.createElement("div");
+                card.className = "card-ranking";
+                if (i === 0) card.classList.add("top1");
+                if (i === 1) card.classList.add("top2");
+                if (i === 2) card.classList.add("top3");
+                const pts = r.pontuacao !== undefined ? r.pontuacao : 0;
+                card.innerHTML = `<strong>${i + 1}. ${r.nome}</strong> - ${r.turma} - ${pts} pts`;
+
+                rankingDiv.appendChild(card);
+            });
+        }
+
+        function mostrarMais() {
+            limite += 10;
+            renderRanking();
+        }
+
+        carregarDados();
+    </script>
+</body>
+
+</html>
